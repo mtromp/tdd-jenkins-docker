@@ -1,0 +1,20 @@
+require "serverspec"
+require "docker"
+
+describe "Dockerfile" do
+  before(:all) do
+    @image = Docker::Image.build_from_dir('.')
+
+    set :os, family: :debian
+    set :backend, :docker
+    set :docker_image, @image.id
+    # override the entry point in the jenkins/jenkins:lts docker
+    set :docker_container_create_options, { 'Entrypoint' => ['bash'] }
+  end
+
+  context 'Verifies that Dockerfile-tdd-jenkins-docker is in /opt' do
+      it 'Dockerfile-tdd-jenkins-docker exists in opt' do
+          expect(file('/opt/Dockerfile-tdd-jenkins-docker')).to exist
+      end
+  end
+end
