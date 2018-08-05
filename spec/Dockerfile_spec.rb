@@ -17,4 +17,9 @@ describe "Dockerfile" do
           expect(file('/opt/Dockerfile-tdd-jenkins-docker')).to exist
       end
   end
+  context 'Verifies that README-tdd-jenkins-docker.md is in /opt' do
+      it 'README-tdd-jenkins-docker.md exists in opt' do
+          expect(file('/opt/README-tdd-jenkins-docker.md')).to exist
+      end
+  end
 end
