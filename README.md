@@ -20,21 +20,27 @@ Working out what I need to do to configure serverspec and develop init-groovy.d 
 ### create spec directory and files
 The tests will be in the spec directory.
 
-## The first test: commit "verify Dockerfile exists in docker"
+## The first test
+commit: "verify Dockerfile exists in docker"
 * The docker must have a copy of the Dockerfile inside and located in /opt
 * The name of the Dockerfile inside the docker should include the name of this project
   - `/opt/Dockerfile-tdd-jenkins-docker`
 
 This first test can simply be run with `bundle exec rspec`
 
-## The second test: commit "verify README.md exists in docker"
+## The second test
+commit: "verify README.md exists in docker"
 * The docker must have a copy of the README.md inside and located in /opt
 * The name of the README.md inside the docker should include the name of this project
   - `/opt/README-tdd-jenkins-docker.md`
 
 ## The third test
+commit: "verify that init.groovy.d file is moved"
 - files in init.groovy.d will be copied inside the docker to /usr/share/jenkins/ref/init.groovy.d
 - prime the directory with `no-setup-wizard.groovy`
 The challenge for this test was that the Dockerfile COPY directive for a directory
 will error if the local directory is empty. I needed to include an empty file in order
 for the docker build command to work.
+
+## The fourth test
+- the running container will have `no-setup-wizard.groovy` in ${JENKINS_HOME}/init.groovy.d
