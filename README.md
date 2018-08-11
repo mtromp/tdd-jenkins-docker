@@ -45,3 +45,6 @@ for the docker build command to work.
 ## The fourth test
 - the running container will have `no-setup-wizard.groovy` in ${JENKINS_HOME}/init.groovy.d
 - simplified and learned how to write better tests.
+
+## Testing the plugins.txt file exists
+- the plugins.txt file exists

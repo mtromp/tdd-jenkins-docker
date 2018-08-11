@@ -6,13 +6,12 @@ JENKINS_HOME='/var/jenkins_home'
 
 describe "Dockerfile" do
   before(:all) do
-    @image = Docker::Image.build_from_dir('.')
+    @image = Docker::Image.build_from_dir('.', :build_arg => 'localAdmin=marianne')
 
     set :os, family: :debian
     set :backend, :docker
     set :docker_image, @image.id
   end
-
 
   it 'Verify files exist in opt' do
       expect(file('/opt/Dockerfile-tdd-jenkins-docker')).to exist
@@ -26,6 +25,20 @@ describe "Dockerfile" do
     end
   end
 
+  it 'Verify plugins.txt exists in ref' do
+    expect(file('/usr/share/jenkins/ref/plugins.txt')).to exist
+  end
+
+  context 'all defined plugins exist' do
+    File.open('plugins.txt').each do |line|
+      (pluginname,version)=line.split /\s|:/
+      describe file "#{JENKINS_HOME}/plugins/#{pluginname}.jpi" do
+        it { should be_file }
+      end
+    end
+  end
+
+
   describe process 'java' do
     it { should be_running }
 
@@ -35,6 +48,12 @@ describe "Dockerfile" do
 
     describe file ('/var/jenkins_home/config.xml') do
       it 'should be_file', :retry => 15, :retry_wait => 3 do
+        should exist
+      end
+    end
+
+    describe file ('/var/jenkins_home/users/admin') do
+      it 'should be_directory', :retry => 15, :retry_wait => 3 do
         should exist
       end
     end
