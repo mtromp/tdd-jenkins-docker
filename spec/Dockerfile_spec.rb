@@ -1,5 +1,6 @@
 require "serverspec"
 require "docker"
+require "rspec/retry"
 
 JENKINS_HOME='/var/jenkins_home'
 
@@ -18,16 +19,24 @@ describe "Dockerfile" do
       expect(file('/opt/README-tdd-jenkins-docker.md')).to exist
   end
 
-  it 'Verify no-setup-wizard.groovy exists in /usr/share/jenkins/ref/init.groovy.d' do
-      expect(file('/usr/share/jenkins/ref/init.groovy.d/no-setup-wizard.groovy')).to exist
+  Dir['init.groovy.d/*'].each do |fname|
+    groovy_file = "/usr/share/jenkins/ref/#{fname}"
+    it "Verify file exists: #{groovy_file}" do
+      expect(file(groovy_file)).to exist
+    end
   end
-
 
   describe process 'java' do
     it { should be_running }
 
     it 'copies init.groovy.d files into place' do
       expect(file("#{JENKINS_HOME}/init.groovy.d/no-setup-wizard.groovy")).to exist
+    end
+
+    describe file ('/var/jenkins_home/config.xml') do
+      it 'should be_file', :retry => 15, :retry_wait => 3 do
+        should exist
+      end
     end
   end
 end
