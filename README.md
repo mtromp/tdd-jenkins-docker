@@ -1,8 +1,17 @@
 # tdd-jenkins-docker
 Working out what I need to do to configure serverspec and develop init-groovy.d scripts for jenkins docker
 
+## Learnings
+* The docker-api gem calls rest endpoints on docker engine, aka docker server.
+  * the endpoints use json and are very different from the command line options.
+  * Hints were found: https://github.com/swipely/docker-api/issues/505
+  * Docker image api: https://docs.docker.com/engine/api/v1.30/#operation/ImageBuild
+* For security reasons, HTTP_PROXY and similar arguments should not be listed with an
+  ARG in the Dockerfile: https://docs.docker.com/network/proxy/
+
+
 ## Assumptions
-* the version of ruby, gem and serverspec are find for what I want to do
+* the version of ruby, gem and serverspec are fine for what I want to do
 * the version of docker will work for me.
 * will pull down the latest jenkins/jenkins:lts docker as the base for this work
 

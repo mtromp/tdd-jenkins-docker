@@ -1,13 +1,13 @@
 require "serverspec"
 require "docker"
+require "json"
 require "rspec/retry"
 
 JENKINS_HOME='/var/jenkins_home'
 
 describe "Dockerfile" do
   before(:all) do
-    @image = Docker::Image.build_from_dir('.', :build_arg => 'localAdmin=marianne')
-
+    @image = Docker::Image.build_from_dir('.', buildargs: {localAdmin: 'marianne'}.to_json)
     set :os, family: :debian
     set :backend, :docker
     set :docker_image, @image.id
@@ -52,7 +52,7 @@ describe "Dockerfile" do
       end
     end
 
-    describe file ('/var/jenkins_home/users/admin') do
+    describe file ('/var/jenkins_home/users/marianne') do
       it 'should be_directory', :retry => 15, :retry_wait => 3 do
         should exist
       end
