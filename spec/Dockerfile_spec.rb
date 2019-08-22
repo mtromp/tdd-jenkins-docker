@@ -52,10 +52,8 @@ describe "Dockerfile" do
       end
     end
 
-    describe file ('/var/jenkins_home/users/marianne') do
-      it 'should be_directory', :retry => 15, :retry_wait => 3 do
-        should exist
-      end
+    describe command('ls /var/jenkins_home/users') do
+      its(:stdout) {should contain('marianne')}
     end
   end
 end
