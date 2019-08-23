@@ -4,6 +4,7 @@ require "json"
 require "rspec/retry"
 
 JENKINS_HOME='/var/jenkins_home'
+JENKINS_VERSION='2.176.2'
 
 describe "Dockerfile" do
   before(:all) do
@@ -38,6 +39,16 @@ describe "Dockerfile" do
     end
   end
 
+  describe 'Files generated to disable setup wizard' do
+    describe file "#{JENKINS_HOME}/jenkins.install.InstallUtil.lastExecVersion" do
+      it { should be_file }
+      its(:content) { should eq "#{JENKINS_VERSION}" }
+    end
+    describe file "#{JENKINS_HOME}/jenkins.install.UpgradeWizard.state" do
+      it { should be_file }
+      its(:content) { should eq "#{JENKINS_VERSION}" }
+    end
+  end
 
   describe process 'java' do
     it { should be_running }
